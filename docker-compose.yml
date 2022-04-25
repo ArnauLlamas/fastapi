@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  development:
+    build:
+      context: ./src
+      dockerfile: ../docker/development.Dockerfile
+      args:
+        USERNAME: ${USER:-dev}
+        USER_UID: ${UID:-1000}
+        USER_GID: ${GID:-1000}
+    volumes:
+      - .:/code
+      - $HOME/.ssh:$HOME/.ssh:ro
+      - $HOME/.gitconfig:$HOME/.gitconfig:cached
+      - $HOME/.bashrc:$HOME/.bashrc:ro
+    env_file:
+      - ./src/.env
+    depends_on:
+      - postgres
+    networks:
+      - development
+
+  app_api:
+    build:
+      context: ./src
+      dockerfile: ../docker/app.Dockerfile
+    env_file:
+      - ./src/.env
+    depends_on:
+      - postgres
+      - app_server
+    networks:
+      - development
+
+  app_server:
+    image: nginx:stable-alpine
+    ports:
+      - "8001:80"
+    volumes:
+      - ./docker/configurations/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app_api
+    networks:
+      - development
+
+  postgres:
+    image: postgres:13.6-alpine
+    restart: on-failure
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/data/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: test_db
+
+    networks:
+      - development
+
+volumes:
+  pgdata:
+
+networks:
+  development:
+    driver: bridge

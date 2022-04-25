@@ -1,0 +1,24 @@
+{
+    "editor.formatOnSave": true,
+    "python.testing.pytestArgs": [
+        "src"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "100"
+    ],
+    "python.languageServer": "Pylance",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "files.watcherExclude": {
+        "**/.git/**": true,
+        "**/env/**": true,
+        "**/venv/**": true,
+        "**/__pycache__/**": true,
+        "**/*.pyc": true,
+        "env-*": true
+    },
+}
