@@ -1,11 +1,8 @@
 """Database instantiation"""
 import sqlalchemy
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import declarative_base, sessionmaker
 
-from app.settings import Settings
-
-
-settings = Settings()
+from app.settings import settings
 
 engine = sqlalchemy.create_engine(settings.database_url)
 

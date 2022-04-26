@@ -1,14 +1,12 @@
 """Cryptographic service"""
 from datetime import datetime, timedelta
 from uuid import UUID
+
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 from app.schemas.crypt import Token, TokenData
-from app.settings import Settings
-
-
-settings = Settings()
+from app.settings import settings
 
 
 class Crypt:

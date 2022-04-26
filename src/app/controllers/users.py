@@ -1,13 +1,14 @@
 """Users controller"""
 from typing import List
 from uuid import UUID, uuid4
+
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
 from app.schemas.crypt import Token, TokenData
-from app.schemas.users import Role, User, SignupUser, LoginUser
+from app.schemas.users import LoginUser, Role, SignupUser, User
 from app.services.crypt import Crypt, DecodeTokenError
-from app.services.users import UsersService, DatabaseError
+from app.services.users import DatabaseError, UsersService
 from app.storage.models import UserModel
 
 
@@ -34,11 +35,11 @@ class UsersController:
         if not user_db:
             raise UserNotCorrectlyAuthenticated
 
-        passwords_match = Crypt().verify_password(login_attempt.password, user_db.password)
+        passwords_match = Crypt().verify_password(login_attempt.password, str(user_db.password))
         if not passwords_match:
             raise UserNotCorrectlyAuthenticated
 
-        return User(id=user_db.id, name=user_db.name, email=user_db.email, role=user_db.role)
+        return User(id=user_db.id, name=user_db.name, email=user_db.email, role=user_db.role)  # type: ignore
 
     @staticmethod
     def encode_user_into_jwt_token(user: User) -> Token:
@@ -54,10 +55,10 @@ class UsersController:
         users_db = await UsersService(self.database).get_users()
         users = []
         for user in users_db:
-            users.append(User(id=user.id, name=user.name, email=user.email, role=user.role))
+            users.append(User(id=user.id, name=user.name, email=user.email, role=user.role))  # type: ignore
         return users
 
-    async def get_user_by_token(self, token: str) -> User:
+    async def get_user_by_token(self, token: Token) -> User:
         """Returns user given JWT Token"""
 
         try:
@@ -74,7 +75,7 @@ class UsersController:
         if not user_db:
             raise UserNotFoundError(user_id)
 
-        return User(id=user_db.id, name=user_db.name, email=user_db.email, role=user_db.role)
+        return User(id=user_db.id, name=user_db.name, email=user_db.email, role=user_db.role)  # type: ignore
 
     async def create_user(self, user_to_create: SignupUser) -> User:
         """Creates a new user"""
@@ -95,7 +96,7 @@ class UsersController:
         except DatabaseError as exception:
             raise SomethingWrongHappened from exception
 
-        return User(id=user_db.id, name=user_db.name, email=user_db.email, role=user_db.role)
+        return User(id=user_db.id, name=user_db.name, email=user_db.email, role=user_db.role)  # type: ignore
 
     async def delete_user(self, user_to_delete: User) -> None:
         """Deletes user"""

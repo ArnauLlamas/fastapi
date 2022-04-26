@@ -1,12 +1,13 @@
 """User Router"""
 from typing import List
-from fastapi import APIRouter, status, Depends
+
 import fastapi
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.controllers.users import UsersController
-from app.schemas.users import User
 from app.dependencies import get_current_admin_user, get_current_user, get_db
+from app.schemas.users import User
 
 router = APIRouter()
 

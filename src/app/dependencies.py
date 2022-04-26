@@ -1,15 +1,15 @@
 """Dependencies"""
 from typing import List
+
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 import app.schemas.responses
-
 from app.controllers.responses import ResponsesController
 from app.controllers.users import CryptError, UserNotFoundError, UsersController
-from app.storage.database import SessionLocal
 from app.schemas.users import Role, User
+from app.storage.database import SessionLocal
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 

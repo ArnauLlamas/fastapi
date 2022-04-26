@@ -1,8 +1,9 @@
 """Users database schema"""
-from sqlalchemy import Column, String, Enum
+from sqlalchemy import Column, Enum, String
 from sqlalchemy.dialects.postgresql import UUID
 
 from app.schemas.users import Role
+
 from .database import Base
 
 

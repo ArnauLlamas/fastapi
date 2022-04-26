@@ -1,5 +1,6 @@
 """General responses helper controller"""
 from typing import Any
+
 from fastapi import HTTPException, status
 
 

@@ -1,6 +1,7 @@
 """Users service"""
 from typing import List
 from uuid import UUID
+
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 

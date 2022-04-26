@@ -1,16 +1,19 @@
 """User base Tests"""
 from typing import Callable
+
 import pytest
 
-from fastapi import Response
+# from fastapi import Response
 from fastapi.testclient import TestClient
+from pydantic import EmailStr
+from requests.models import Response
 
-from app.schemas.users import LoginUser, SignupUser, Role
 from app.main import app
+from app.schemas.users import LoginUser, Role, SignupUser
 
 from .dependencies import get_random_user_name
 
-RandomUserFunction = Callable[[Role], SignupUser]
+RandomUserFunction = Callable[[], SignupUser]
 LoginFunction = Callable[[TestClient, LoginUser], Response]
 SignupFunction = Callable[[TestClient, SignupUser], Response]
 DeleteFunction = Callable[[TestClient, str], Response]
@@ -30,7 +33,7 @@ class TestUserBase:
             random_username = get_random_user_name()
             user = SignupUser(
                 name=random_username,
-                email=f"{random_username}@example.com",
+                email=EmailStr(f"{random_username}@example.com"),
                 password="a-super-secret-password",
                 role=role,
             )
@@ -103,7 +106,7 @@ class TestUserMe(TestUserBase):
     def test_login(
         self, login_user: LoginFunction, username="pepe@example.com", password="secret"
     ) -> str:
-        response = login_user(self.client, LoginUser(email=username, password=password))
+        response = login_user(self.client, LoginUser(email=EmailStr(username), password=password))
         assert response.status_code == 200
         assert response.json()["token_type"] == "bearer"
         assert response.json()["access_token"]
@@ -147,7 +150,10 @@ class TestUserMe(TestUserBase):
 
     def test_fail_create_existing_user(self, signup_user):
         s_user = SignupUser(
-            name="pepe", email="pepe@example.com", role=Role.GUEST, password="super-secret"
+            name="pepe",
+            email=EmailStr("pepe@example.com"),
+            role=Role.GUEST,
+            password="super-secret",
         )
 
         response = signup_user(self.client, s_user)
