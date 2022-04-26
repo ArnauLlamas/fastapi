@@ -1,4 +1,3 @@
-"""Dependencies"""
 from typing import List
 
 from fastapi import Depends
@@ -8,6 +7,7 @@ from sqlalchemy.orm import Session
 import app.schemas.responses
 from app.controllers.responses import ResponsesController
 from app.controllers.users import CryptError, UserNotFoundError, UsersController
+from app.schemas.crypt import Token
 from app.schemas.users import Role, User
 from app.storage.database import SessionLocal
 
@@ -15,7 +15,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 
 def get_db():
-    """Get database session"""
     database = SessionLocal()
     try:
         yield database
@@ -24,7 +23,7 @@ def get_db():
 
 
 async def get_current_user(
-    token: str = Depends(oauth2_scheme),
+    token: Token = Depends(oauth2_scheme),
     database: Session = Depends(get_db),
 ) -> User:
     """Gets user based on JWT"""

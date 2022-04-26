@@ -1,4 +1,3 @@
-"""User base Tests"""
 from typing import Callable
 
 import pytest
@@ -24,7 +23,6 @@ class TestUserBase:
 
     client = TestClient(app)
 
-    # pylint: disable=missing-function-docstring
     @staticmethod
     @pytest.fixture
     def create_random_user() -> RandomUserFunction:
@@ -102,7 +100,6 @@ class TestUserBase:
 class TestUserMe(TestUserBase):
     """Test base of /users/me endpoint"""
 
-    # pylint: disable=missing-function-docstring
     def test_login(
         self, login_user: LoginFunction, username="pepe@example.com", password="secret"
     ) -> str:

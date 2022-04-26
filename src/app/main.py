@@ -1,4 +1,3 @@
-"""API init"""
 from fastapi import FastAPI
 
 from .routers import auth, users
@@ -15,7 +14,6 @@ app.include_router(users.router, prefix="/users", tags=["users"])
 
 @app.get("/status")
 def hello_world():
-    """Retrieves a Hello world"""
     return {"Hello": "World"}
 
 

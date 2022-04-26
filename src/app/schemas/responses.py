@@ -5,8 +5,6 @@ from app.controllers.responses import ResponsesController
 
 
 class BaseResponse(BaseModel):
-    """Base response"""
-
     detail: str
 
 

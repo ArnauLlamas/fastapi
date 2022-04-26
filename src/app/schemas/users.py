@@ -6,16 +6,12 @@ from pydantic import BaseModel, EmailStr
 
 
 class Role(str, Enum):
-    """Model for a user's role"""
-
     ADMIN = "admin"
     USER = "user"
     GUEST = "guest"
 
 
 class UserBase(BaseModel):
-    """Class used as model for other class models. Do not use implement it directly"""
-
     name: str
     email: EmailStr
     role: Role

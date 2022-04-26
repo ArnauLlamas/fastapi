@@ -1,4 +1,3 @@
-"""Users controller"""
 from typing import List
 from uuid import UUID, uuid4
 
@@ -13,8 +12,6 @@ from app.storage.models import UserModel
 
 
 class UsersController:
-    """Users Controller"""
-
     database: Session
 
     def __init__(self, database: Session):

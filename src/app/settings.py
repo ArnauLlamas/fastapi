@@ -1,10 +1,7 @@
-"""Application settings"""
 from pydantic import BaseSettings, PostgresDsn
 
 
 class Settings(BaseSettings):
-    """Application settings class"""
-
     app_name: str = "Admin Service"
 
     secret_key: str

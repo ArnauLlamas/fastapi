@@ -1,4 +1,3 @@
-"""Cryptographic service"""
 from datetime import datetime, timedelta
 from uuid import UUID
 
@@ -10,8 +9,6 @@ from app.settings import settings
 
 
 class Crypt:
-    """Cryptography helper class"""
-
     pwd_context: CryptContext
 
     def __init__(self) -> None:

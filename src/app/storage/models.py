@@ -8,8 +8,6 @@ from .database import Base
 
 
 class UserModel(Base):
-    """Users Table database model"""
-
     __tablename__ = "users"
 
     id = Column(UUID(as_uuid=True), primary_key=True, index=True)

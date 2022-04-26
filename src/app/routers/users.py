@@ -1,4 +1,3 @@
-"""User Router"""
 from typing import List
 
 import fastapi
