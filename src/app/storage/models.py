@@ -1,13 +1,14 @@
 """Users database schema"""
 from sqlalchemy import Column, Enum, String
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.declarative import declarative_base
 
 from app.schemas.users import Role
 
-from .database import Base
+Base = declarative_base()
 
 
-class UserModel(Base):
+class DBUser(Base):
     __tablename__ = "users"
 
     id = Column(UUID(as_uuid=True), primary_key=True, index=True)

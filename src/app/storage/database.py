@@ -1,10 +1,17 @@
-import sqlalchemy
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.engine import create_engine
+from sqlalchemy.engine.base import Engine
+from sqlalchemy.orm import Session, sessionmaker
 
-from app.settings import settings
+from app.storage.models import Base
 
-engine = sqlalchemy.create_engine(settings.database_url)
+DBSession = sessionmaker(autocommit=False, autoflush=False)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+def init_db(database_url) -> None:
+    engine: Engine = create_engine(database_url)
+    Base.metadata.bind = engine
+    DBSession.bind = engine  # type: ignore
+
+
+def get_session() -> Session:
+    return DBSession()

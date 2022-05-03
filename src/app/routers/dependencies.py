@@ -2,38 +2,28 @@ from typing import List
 
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
 
-import app.schemas.responses
-from app.controllers.responses import ResponsesController
-from app.controllers.users import CryptError, UserNotFoundError, UsersController
-from app.schemas.crypt import Token
+from app.controllers import auth
+from app.controllers.auth import CryptError
+from app.controllers.users import UserNotFoundError
+from app.libs.crypt.schemas import Token
+from app.libs.responses import responses
 from app.schemas.users import Role, User
-from app.storage.database import SessionLocal
+from app.services.users import UsersInterface
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 
-def get_db():
-    database = SessionLocal()
-    try:
-        yield database
-    finally:
-        database.close()
-
-
-async def get_current_user(
-    token: Token = Depends(oauth2_scheme),
-    database: Session = Depends(get_db),
-) -> User:
+async def get_current_user(token: Token = Depends(oauth2_scheme)) -> User:
     """Gets user based on JWT"""
 
-    credentials_exception = ResponsesController().unauthorized_exception(
+    credentials_exception = responses.unauthorized_exception(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    users_interface = UsersInterface()
     try:
-        return await UsersController(database).get_user_by_token(token)
+        return await auth.read_user_by_token(token, users_interface)
     except (CryptError, UserNotFoundError) as exception:
         raise credentials_exception from exception
 
@@ -42,7 +32,7 @@ async def get_current_admin_user(current_user: User = Depends(get_current_user))
     """Check if current user is admin"""
 
     if current_user.role != Role.ADMIN:
-        raise ResponsesController().forbidden_exception()
+        raise responses.forbidden_exception()
     return current_user
 
 
@@ -51,6 +41,6 @@ def get_responses(codes: List[int]) -> dict:
 
     code_responses = {}
     for code in codes:
-        code_responses[code] = app.schemas.responses.responses[code]
+        code_responses[code] = responses.predefined_responses[code]
 
     return code_responses
