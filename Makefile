@@ -16,9 +16,11 @@ help: ##@miscellaneous Show this help
 install: ##@dev Install dependencies
 	@cd src/ && pipenv install --dev --system
 
-tests: test
+tests: test coverage
 test: ##@dev Execute tests with pytest
 	@cd src/ && pipenv run test
+coverage:
+	@cd src/ && pipenv run coverage
 
 audit: ##@dev Scan for known vulnerabilities dependencies
 	@cd src/ && pipenv check --system || true
