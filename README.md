@@ -1,18 +1,23 @@
 <!-- omit in toc -->
+
 # FastAPI
 
 Personal project trying out [FastAPI](https://fastapi.tiangolo.com) Python framework.
 
 <!-- omit in toc -->
+
 ## Table of Contents
 
 - [General info](#general-info)
 - [Requirements](#requirements)
+  - [Development](#development)
 
 ## General info
+
 WIP
 
 ## Requirements
+
 - VS Code + Remote Containers extension
 - Docker
 - Docker Compose
@@ -24,6 +29,7 @@ _This instruction imply you are using VSCode along with the Remote Containers ex
 Once you open the downloaded repository with VSCode a popup asking you to reopen the repository in a remote container, ignore it for now.
 
 The very first thing you will have to do is to create the `.env` files
+
 - `.env` Specifies the variables for the docker-compose.yml and are developer-related. You can leave them blank and default values will be created, but you still need to create this file
 - `.src/.env` Specifies the application variables
 
