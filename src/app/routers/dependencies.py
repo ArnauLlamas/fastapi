@@ -9,7 +9,8 @@ from app.controllers.users import UserNotFoundError
 from app.libs.crypt.schemas import Token
 from app.libs.responses import responses
 from app.schemas.users import Role, User
-from app.services.users import UsersInterface
+from app.services.db_interface import DBInterface
+from app.storage.models import DBUser
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
@@ -21,7 +22,7 @@ async def get_current_user(token: Token = Depends(oauth2_scheme)) -> User:
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    users_interface = UsersInterface()
+    users_interface = DBInterface(DBUser)
     try:
         return await auth.read_user_by_token(token, users_interface)
     except (CryptError, UserNotFoundError) as exception:

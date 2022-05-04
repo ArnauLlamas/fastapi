@@ -8,7 +8,8 @@ from app.controllers.users import UserAlreadyExistsError
 from app.libs.crypt.schemas import Token
 from app.libs.responses import responses
 from app.schemas.users import CreateUserData, LoginUserData
-from app.services.users import UsersInterface
+from app.services.db_interface import DBInterface
+from app.storage.models import DBUser
 
 from .dependencies import get_responses
 
@@ -19,7 +20,7 @@ router = APIRouter()
 async def login_user(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
     """Logins user with email + password and returns a JWT with user's ID"""
 
-    users_interface = UsersInterface()
+    users_interface = DBInterface(DBUser)
     try:
         login_attempt = LoginUserData(
             email=EmailStr(form_data.username), password=form_data.password
@@ -37,7 +38,7 @@ async def login_user(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
 async def signup_user(new_user: CreateUserData):
     """Creates a new user into the system"""
 
-    users_interface = UsersInterface()
+    users_interface = DBInterface(DBUser)
     try:
         await users.create(new_user, users_interface)
 

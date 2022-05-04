@@ -1,7 +1,7 @@
-from typing import List, Protocol
+from typing import Any, List, Protocol
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 from .models import Base
 
@@ -10,22 +10,24 @@ DBObject = type(Base)
 
 
 class DataInterface(Protocol):
-    def read_by_id(self, id: int | UUID) -> DBObject:
+    """
+    Protocol on how to instantiate any Data Interface, such a DB Interface or others.
+    """
+
+    async def read_by_id(self, id: int | UUID) -> DBObject:
         ...
 
-    def read_all(self) -> List[DBObject]:
+    async def read_by_field(self, field: str, field_valu: Any) -> DBObject:
         ...
 
-    def create(self, data: DBObject) -> DBObject:
+    async def read_all(self) -> List[DBObject]:
         ...
 
-    def update(self, id: int | UUID, data: DataObject) -> DBObject:
+    async def create(self, data: DBObject) -> DBObject:
         ...
 
-    def delete(self, id: int | UUID) -> None:
+    async def update(self, id: int | UUID, data: DataObject) -> DBObject:
         ...
 
-
-class DataUserInterface(DataInterface, Protocol):
-    def read_by_email(self, email: EmailStr) -> DBObject:
+    async def delete(self, id: int | UUID) -> None:
         ...

@@ -3,22 +3,22 @@ from app.libs.crypt import crypt
 from app.libs.crypt.crypt import DecodeTokenError
 from app.libs.crypt.schemas import Token, TokenData
 from app.schemas.users import LoginUserData, User
-from app.services.users import UsersInterface
+from app.services.db_interface import DBInterface
 from app.settings import settings
 from app.storage.models import DBUser
 
 
-async def login_user(login_attempt: LoginUserData, users_interface: UsersInterface) -> Token:
+async def login_user(login_attempt: LoginUserData, users_interface: DBInterface) -> Token:
     """Simple method to authenticate and encode an user"""
 
     user = await authenticate_user(login_attempt, users_interface)
     return encode_user_into_jwt_token(user)
 
 
-async def authenticate_user(login_attempt: LoginUserData, users_interface: UsersInterface) -> User:
+async def authenticate_user(login_attempt: LoginUserData, users_interface: DBInterface) -> User:
     """Authenticate user against users service"""
 
-    user_db: DBUser = await users_interface.read_by_email(login_attempt.email)
+    user_db: DBUser = await users_interface.read_by_field("email", login_attempt.email)
     if not user_db:
         raise UserNotCorrectlyAuthenticatedError
 
@@ -39,7 +39,7 @@ def encode_user_into_jwt_token(user: User) -> Token:
     )
 
 
-async def read_user_by_token(token: Token, users_interface: UsersInterface) -> User:
+async def read_user_by_token(token: Token, users_interface: DBInterface) -> User:
     """Returns user given JWT Token"""
 
     try:

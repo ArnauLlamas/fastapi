@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List
+from typing import Any, List
 from uuid import UUID
 
 from app.storage.data_interface import DataObject, DBObject
@@ -20,6 +20,14 @@ def exception_handling(function):
 
 
 class DBInterface:
+    """
+    Generic Database interface to interact with any modeled object.
+    Recieves the modeled database object as parameter.
+
+    Can be expanded through inheritance and therefore create more
+    specific services if needed.
+    """
+
     def __init__(self, db_class: DBObject):
         self.db_class = db_class
 
@@ -27,6 +35,15 @@ class DBInterface:
     async def read_by_id(self, id: int | UUID) -> DBObject:
         session = get_session()
         return session.query(self.db_class).get(id)
+
+    @exception_handling
+    async def read_by_field(self, field_name: str, field_value: Any) -> DBObject:
+        session = get_session()
+        return (
+            session.query(self.db_class)
+            .filter(getattr(self.db_class, field_name) == field_value)
+            .first()
+        )
 
     @exception_handling
     async def read_all(self) -> List[DBObject]:
