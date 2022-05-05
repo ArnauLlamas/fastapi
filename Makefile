@@ -13,20 +13,23 @@ HELP_FUN = \
 help: ##@miscellaneous Show this help
 	@perl -e '$(HELP_FUN)' $(MAKEFILE_LIST)
 
-install: ##@dev Install dependencies
-	@cd src/ && pipenv install --dev --system
+_poetry_config:
+	@poetry config virtualenvs.create false
 
-tests: test coverage
-test: ##@dev Execute tests with pytest
-	@cd src/ && pipenv run test
+install: _poetry_config ##@dev Install dependencies
+	@cd src/ && poetry install
+
+tests: test coverage ##@dev Execute tests and coverage
+test: 
+	@cd src/ && coverage run -m pytest
 coverage:
-	@cd src/ && pipenv run coverage
+	@cd src/ && coverage report -m
 
-audit: ##@dev Scan for known vulnerabilities dependencies
-	@cd src/ && pipenv check --system || true
+audit: _poetry_config ##@dev Scan for known vulnerabilities dependencies
+	@cd src/ && poetry export --without-hashes -f requirements.txt | safety check --full-report --stdin
 
 dev: ##@dev Start development server with hotreloading
-	@cd src/ && pipenv run dev
+	@cd src/ && uvicorn app.main:app --reload
 
 db: ##@dev CLI database connection
 	@PGPASSWORD=secret psql -h postgres -d test_db -U root

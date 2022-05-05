@@ -25,14 +25,15 @@ RUN wget -qO /etc/apt/trusted.gpg.d/pgdg.asc https://www.postgresql.org/media/ke
     apt-get update && \
     apt-get install -y postgresql-client-13
 
-# Install pipenv
+# Install and configure poetry
 RUN pip install --upgrade pip && \
-    pip install pipenv
+    pip install poetry && \
+    poetry config virtualenvs.create false
 
-# Install dependencies with pipenv
-COPY Pipfile* app/
-RUN cd app && \
-    pipenv install --dev --system
+# Install dependencies with poetry
+COPY pyproject.toml poetry.lock src/
+RUN cd src && \
+    poetry install
 
 # Add user
 RUN groupadd --gid $USER_GID $USERNAME && \

@@ -5,17 +5,18 @@ WORKDIR /code
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Install pipenv
+# Install and configure poetry
 RUN pip install --upgrade pip && \
-    pip install pipenv
+    pip install poetry && \
+    poetry config virtualenvs.create false
 
 COPY ./app /code
 
-RUN pipenv install --deploy --system
+RUN poetry install --no-dev
 
 # Clean
-RUN pip uninstall -y pipenv virtualenv virtualenv-clone
-RUN rm -f Pipfile*
+RUN pip uninstall -y poetry
+RUN rm -f pyproject.toml poetry.lock
 
 EXPOSE 80
 
