@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "app"
+version = "0.1.0"
+description = ""
+authors = ["Arnau Llamas <arnau.llamas@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "*"
+uvicorn = "*"
+pydantic = {extras = ["email"], version = "*"}
+sqlalchemy = "*"
+psycopg2 = "*"
+passlib = {extras = ["bcrypt"], version = "*"}
+python-jose = {extras = ["cryptography"], version = "*"}
+python-multipart = "*"
+
+[tool.poetry.dev-dependencies]
+black = "*"
+pylint = "*"
+pytest = "*"
+coverage = "*"
+requests = "*"
+safety = "^1.10.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
